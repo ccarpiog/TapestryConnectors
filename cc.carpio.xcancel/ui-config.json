@@ -4,13 +4,13 @@
 			"name": "feedUrl",
 			"type": "text",
 			"prompt": "URL del feed RSS",
-			"placeholder": "https://xcancel.com/usuario/with_replies/rss"
+			"placeholder": "https://xcancel.com/username"
 		},
 		{
-			"name": "hideReplies",
+			"name": "includeReplies",
 			"type": "switch",
-			"prompt": "Ocultar respuestas",
-			"value": "off"
+			"prompt": "Incluir respuestas",
+			"value": "on"
 		},
 		{
 			"name": "hideRetweets",

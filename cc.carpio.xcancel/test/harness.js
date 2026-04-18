@@ -167,7 +167,7 @@ const gateXml = fs.readFileSync(path.join(__dirname, "gate-fixture.rss"), "utf8"
 
 global.site = "https://xcancel.com";
 global.feedUrl = "https://xcancel.com/sanchezcastejon/with_replies/rss";
-global.hideReplies = "off";
+global.includeReplies = "on";
 global.hideRetweets = "off";
 
 let nextResponse = fixtureXml;
@@ -303,6 +303,26 @@ async function run() {
 
 	// Quote — should keep the blockquote in body
 	assert.ok(/<blockquote>/i.test(quote.body), "quote item should preserve blockquote");
+
+	// resolveFeedUrl URL-shape handling
+	const cases = [
+		{ url: "https://xcancel.com/user", replies: "on", expect: "https://xcancel.com/user/with_replies/rss" },
+		{ url: "https://xcancel.com/user", replies: "off", expect: "https://xcancel.com/user/rss" },
+		{ url: "https://xcancel.com/user/", replies: "on", expect: "https://xcancel.com/user/with_replies/rss" },
+		{ url: "https://xcancel.com/user/rss", replies: "on", expect: "https://xcancel.com/user/with_replies/rss" },
+		{ url: "https://xcancel.com/user/with_replies/rss", replies: "off", expect: "https://xcancel.com/user/rss" },
+		{ url: "https://xcancel.com/user/with_replies", replies: "off", expect: "https://xcancel.com/user/rss" },
+		{ url: "https://xcancel.com/user/media", replies: "on", expect: "https://xcancel.com/user/media" }
+	];
+	for (const c of cases) {
+		global.feedUrl = c.url;
+		global.includeReplies = c.replies;
+		const got = resolveFeedUrl();
+		assert.strictEqual(got, c.expect,
+			"resolveFeedUrl(" + c.url + ", replies=" + c.replies + ") => " + got);
+	} // End of the loop over URL-shape cases
+	global.feedUrl = "https://xcancel.com/sanchezcastejon/with_replies/rss";
+	global.includeReplies = "on";
 
 	// Whitelist-gate detection
 	captured = { results: null, error: null, verification: null };

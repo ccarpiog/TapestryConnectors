@@ -25,14 +25,37 @@ const REQUEST_HEADERS = {
 };
 
 /**
+ * Builds the actual RSS URL to fetch from the user-supplied input and
+ * the "Incluir respuestas" switch. Accepts any of these shapes for
+ * convenience:
+ *   https://host/username
+ *   https://host/username/
+ *   https://host/username/rss
+ *   https://host/username/with_replies
+ *   https://host/username/with_replies/rss
+ * and rewrites the suffix to match the switch. Unrecognized shapes
+ * (media feeds, search, list URLs) are returned unchanged so users
+ * with custom Nitter URLs aren't broken.
+ *
+ * @returns {string} The URL to pass to sendRequest.
+ */
+function resolveFeedUrl() {
+	const raw = (typeof feedUrl === "string" && feedUrl.length > 0) ? feedUrl : site;
+	const wantReplies = readSwitch(typeof includeReplies !== "undefined" ? includeReplies : "on");
+	const desiredSuffix = wantReplies ? "/with_replies/rss" : "/rss";
+
+	const profile = raw.match(/^(https?:\/\/[^/]+\/[A-Za-z0-9_]+)(?:\/(?:with_replies(?:\/rss)?|rss))?\/?$/);
+	if (profile) return profile[1] + desiredSuffix;
+	return raw;
+} // End of function resolveFeedUrl()
+
+/**
  * Entry point called when the user adds/edits the feed. Fetches the
  * feed once, validates it is actually Nitter-style RSS, and reports
  * display metadata back to Tapestry.
  */
 function verify() {
-	const url = (typeof feedUrl === "string" && feedUrl.length > 0)
-		? feedUrl
-		: site;
+	const url = resolveFeedUrl();
 	return sendRequest(url, "GET", null, REQUEST_HEADERS)
 		.then((text) => {
 			return xmlParse(text).then((doc) => {
@@ -79,9 +102,7 @@ function verify() {
  * feed, parses every <item>, and emits Tapestry Item objects.
  */
 function load() {
-	const url = (typeof feedUrl === "string" && feedUrl.length > 0)
-		? feedUrl
-		: site;
+	const url = resolveFeedUrl();
 	return sendRequest(url, "GET", null, REQUEST_HEADERS)
 		.then((text) => {
 			return xmlParse(text).then((doc) => {
@@ -205,9 +226,6 @@ function buildItem(raw, channel) {
 	const kind = classifyTitle(rawTitle);
 
 	if (kind.type === "retweet" && readSwitch(typeof hideRetweets !== "undefined" ? hideRetweets : "off")) {
-		return null;
-	}
-	if (kind.type === "reply" && readSwitch(typeof hideReplies !== "undefined" ? hideReplies : "off")) {
 		return null;
 	}
 
