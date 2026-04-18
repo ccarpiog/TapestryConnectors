@@ -289,6 +289,11 @@ async function run() {
 	// Two photos => two image attachments
 	const imgAtts = reply.attachments.filter(a => a instanceof MediaAttachment && a.mimeType === "image");
 	assert.strictEqual(imgAtts.length, 2, "reply should have 2 image attachments");
+	// Reply should also carry a LinkAttachment pointing at the conversation
+	const convo = reply.attachments.find(a => a instanceof LinkAttachment && a.title === "Ver la conversación");
+	assert.ok(convo, "reply should include a conversation LinkAttachment");
+	assert.ok(convo.url && convo.url.includes("/status/"), "conversation URL should be the status link");
+	assert.strictEqual(convo.subtitle, "Respuesta a @otroUsuario");
 
 	// GIF item
 	const gifAtt = gif.attachments.find(a => a instanceof MediaAttachment && (a.mimeType || "").startsWith("video"));

@@ -250,6 +250,20 @@ function buildItem(raw, channel) {
 
 	const extracted = extractMediaAndCleanBody(descriptionHtml, link);
 	item.body = extracted.body;
+
+	// The Nitter RSS carries the reply itself but never the parent
+	// tweet. The parent only lives on the status page, which XCancel
+	// gates behind a JavaScript challenge we cannot solve from
+	// sendRequest. Best we can do without extra fetches: surface a
+	// link card pointing at the full conversation view.
+	if (kind.type === "reply" && link) {
+		const convo = LinkAttachment.createWithUrl(link);
+		convo.title = "Ver la conversación";
+		convo.subtitle = "Respuesta a @" + kind.handle;
+		convo.siteName = "XCancel";
+		extracted.attachments.push(convo);
+	}
+
 	if (extracted.attachments.length > 0) {
 		item.attachments = extracted.attachments;
 	}
