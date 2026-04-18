@@ -40,7 +40,7 @@ const REQUEST_HEADERS = {
  */
 function resolveFeedUrl() {
 	const raw = (typeof feedUrl === "string" && feedUrl.length > 0) ? feedUrl : site;
-	const wantReplies = readSwitch(typeof includeReplies !== "undefined" ? includeReplies : "on");
+	const wantReplies = readSwitch(typeof includeReplies !== "undefined" ? includeReplies : "off");
 	const desiredSuffix = wantReplies ? "/with_replies/rss" : "/rss";
 
 	const rewritten = raw.replace(

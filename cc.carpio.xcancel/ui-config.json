@@ -10,7 +10,7 @@
 			"name": "includeReplies",
 			"type": "switch",
 			"prompt": "Incluir respuestas",
-			"value": "on"
+			"value": "off"
 		},
 		{
 			"name": "hideRetweets",
