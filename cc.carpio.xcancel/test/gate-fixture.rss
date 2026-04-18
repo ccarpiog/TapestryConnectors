@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+    <atom:link href="https://rss.xcancel.com/112canarias/with_replies/rss" rel="self" type="application/rss+xml" />
+    <title>RSS reader not yet whitelisted!</title>
+    <link>https://rss.xcancel.com/112canarias/with_replies/rss</link>
+    <description>RSS reader not yet whitelist! Please send an email to get this ID whitelisted: 22344d98bdef730f53268ea9ef579a221e9b3f42f684d37bef23a4b7a85ab4553c8c8ad520cb71c005658b463e0771331f7d2ce31fb2f6b4035daba5a78d8340dd71f2f6cea1312ce7e9695644140df77b487cae057f764ddf374098373d7b02</description>
+    <language>en-us</language>
+    <ttl>1</ttl>
+    <item>
+      <title>RSS reader not yet whitelisted!</title>
+      <dc:creator>@xcancel</dc:creator>
+      <description>RSS reader not yet whitelist! Plain request with just the ID will be ignored! Please send an email rss [AT] xcancel [DOT] com with the reason why you want your RSS feed reader to be whitelist and this ID: 22344d98bdef730f53268ea9ef579a221e9b3f42f684d37bef23a4b7a85ab4553c8c8ad520cb71c005658b463e0771331f7d2ce31fb2f6b4035daba5a78d8340dd71f2f6cea1312ce7e9695644140df77b487cae057f764ddf374098373d7b02</description>
+      <pubDate>Mon, 01 January 1971 00:00:00 GMT</pubDate>
+      <guid>https://rss.xcancel.com/112canarias/with_replies/rss</guid>
+      <link>https://rss.xcancel.com/112canarias/with_replies/rss</link>
+    </item>
+  </channel>
+</rss>
