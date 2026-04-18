@@ -26,16 +26,15 @@ const REQUEST_HEADERS = {
 
 /**
  * Builds the actual RSS URL to fetch from the user-supplied input and
- * the "Incluir respuestas" switch. Accepts any of these shapes for
- * convenience:
- *   https://host/username
- *   https://host/username/
- *   https://host/username/rss
- *   https://host/username/with_replies
- *   https://host/username/with_replies/rss
- * and rewrites the suffix to match the switch. Unrecognized shapes
- * (media feeds, search, list URLs) are returned unchanged so users
- * with custom Nitter URLs aren't broken.
+ * the "Incluir respuestas" switch.
+ *
+ * - Rewrites twitter.com / x.com / mobile.twitter.com hosts to
+ *   xcancel.com so users can paste a Twitter URL directly.
+ * - Accepts bare profile, /rss, /with_replies, /with_replies/rss,
+ *   and /status/<id> shapes and collapses them to the username's
+ *   feed with the suffix the switch implies.
+ * - Passes through URLs it doesn't recognise (media feeds, searches,
+ *   lists, custom Nitter endpoints) so power users aren't blocked.
  *
  * @returns {string} The URL to pass to sendRequest.
  */
@@ -44,9 +43,18 @@ function resolveFeedUrl() {
 	const wantReplies = readSwitch(typeof includeReplies !== "undefined" ? includeReplies : "on");
 	const desiredSuffix = wantReplies ? "/with_replies/rss" : "/rss";
 
-	const profile = raw.match(/^(https?:\/\/[^/]+\/[A-Za-z0-9_]+)(?:\/(?:with_replies(?:\/rss)?|rss))?\/?$/);
-	if (profile) return profile[1] + desiredSuffix;
-	return raw;
+	const rewritten = raw.replace(
+		/^https?:\/\/(?:mobile\.|www\.)?(?:twitter|x)\.com\//i,
+		"https://xcancel.com/"
+	);
+
+	const RESERVED = ["i", "search", "settings", "login", "home", "explore",
+		"notifications", "messages", "about", "rss"];
+	const m = rewritten.match(/^(https?:\/\/[^/]+)\/([A-Za-z0-9_]+)(?:[/?#]|$)/);
+	if (m && RESERVED.indexOf(m[2].toLowerCase()) < 0) {
+		return m[1] + "/" + m[2] + desiredSuffix;
+	}
+	return rewritten;
 } // End of function resolveFeedUrl()
 
 /**

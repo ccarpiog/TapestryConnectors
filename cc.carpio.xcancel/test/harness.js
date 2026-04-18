@@ -312,7 +312,16 @@ async function run() {
 		{ url: "https://xcancel.com/user/rss", replies: "on", expect: "https://xcancel.com/user/with_replies/rss" },
 		{ url: "https://xcancel.com/user/with_replies/rss", replies: "off", expect: "https://xcancel.com/user/rss" },
 		{ url: "https://xcancel.com/user/with_replies", replies: "off", expect: "https://xcancel.com/user/rss" },
-		{ url: "https://xcancel.com/user/media", replies: "on", expect: "https://xcancel.com/user/media" }
+		// Twitter / X host rewriting
+		{ url: "https://twitter.com/user", replies: "on", expect: "https://xcancel.com/user/with_replies/rss" },
+		{ url: "https://x.com/user", replies: "on", expect: "https://xcancel.com/user/with_replies/rss" },
+		{ url: "https://mobile.twitter.com/user", replies: "off", expect: "https://xcancel.com/user/rss" },
+		{ url: "http://www.twitter.com/user", replies: "on", expect: "https://xcancel.com/user/with_replies/rss" },
+		// Status URLs collapse to the author's feed
+		{ url: "https://twitter.com/user/status/123456", replies: "on", expect: "https://xcancel.com/user/with_replies/rss" },
+		{ url: "https://xcancel.com/user/status/123456#m", replies: "off", expect: "https://xcancel.com/user/rss" },
+		// Reserved / unrecognized paths pass through
+		{ url: "https://xcancel.com/search?q=foo", replies: "on", expect: "https://xcancel.com/search?q=foo" }
 	];
 	for (const c of cases) {
 		global.feedUrl = c.url;

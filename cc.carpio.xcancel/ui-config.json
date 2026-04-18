@@ -4,7 +4,7 @@
 			"name": "feedUrl",
 			"type": "text",
 			"prompt": "URL del feed RSS",
-			"placeholder": "https://xcancel.com/username"
+			"placeholder": "https://xcancel.com/username o https://x.com/username"
 		},
 		{
 			"name": "includeReplies",
