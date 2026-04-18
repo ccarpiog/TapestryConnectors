@@ -4,7 +4,7 @@
 			"name": "feedUrl",
 			"type": "text",
 			"prompt": "URL del feed RSS",
-			"placeholder": "https://xcancel.com/112canarias/with_replies/rss"
+			"placeholder": "https://xcancel.com/usuario/with_replies/rss"
 		},
 		{
 			"name": "hideReplies",
