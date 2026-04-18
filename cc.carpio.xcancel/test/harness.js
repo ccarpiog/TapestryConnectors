@@ -166,7 +166,7 @@ const fixtureXml = fs.readFileSync(FIXTURE_PATH, "utf8");
 const gateXml = fs.readFileSync(path.join(__dirname, "gate-fixture.rss"), "utf8");
 
 global.site = "https://xcancel.com";
-global.feedUrl = "https://xcancel.com/sanchezcastejon/with_replies/rss";
+global.feedUrl = "https://xcancel.com/sample_user/with_replies/rss";
 global.includeReplies = "on";
 global.hideRetweets = "off";
 
@@ -246,10 +246,10 @@ async function run() {
 	await verify();
 	assert.strictEqual(captured.error, null, "verify() raised: " + (captured.error && captured.error.message));
 	assert.ok(captured.verification, "verify() produced no verification object");
-	assert.strictEqual(captured.verification.displayName, "Pedro Sánchez / @sanchezcastejon");
+	assert.strictEqual(captured.verification.displayName, "Sample User / @sample_user");
 	assert.strictEqual(captured.verification.icon, "https://xcancel.com/pic/avatar.jpg");
 	assert.ok(captured.verification.accountIdentity, "expected accountIdentity");
-	assert.strictEqual(captured.verification.accountIdentity.username, "@sanchezcastejon");
+	assert.strictEqual(captured.verification.accountIdentity.username, "@sample_user");
 
 	captured = { results: null, error: null, verification: null };
 
@@ -262,21 +262,21 @@ async function run() {
 	const [pinned, retweet, reply, gif, quote] = items;
 
 	// Pinned
-	assert.strictEqual(pinned.author.username, "@sanchezcastejon");
-	assert.ok(pinned.annotations && pinned.annotations[0].text === "Fijado",
+	assert.strictEqual(pinned.author.username, "@sample_user");
+	assert.ok(pinned.annotations && pinned.annotations[0].text === "Pinned",
 		"pinned item should be annotated");
-	assert.strictEqual(pinned.uri, "https://xcancel.com/sanchezcastejon/status/1111111111111111111",
+	assert.strictEqual(pinned.uri, "https://xcancel.com/sample_user/status/1111111111111111111",
 		"pinned URI should keep origin so the 'open original' action works");
 
 	// Retweet — attribution must be the ORIGINAL author
-	assert.strictEqual(retweet.author.username, "@garcbaines1975",
+	assert.strictEqual(retweet.author.username, "@another_user",
 		"retweet author must be the original poster, got " + retweet.author.username);
-	assert.ok(retweet.annotations && retweet.annotations[0].text.startsWith("Retweet de @sanchezcastejon"),
+	assert.ok(retweet.annotations && retweet.annotations[0].text.startsWith("Retweeted by @sample_user"),
 		"retweet annotation must name the retweeter");
 	// Video in retweet => LinkAttachment with the video thumb as image
 	const linkAtt = retweet.attachments.find(a => a instanceof LinkAttachment);
 	assert.ok(linkAtt, "retweet with video should have a LinkAttachment");
-	assert.strictEqual(linkAtt.image, "https://xcancel.com/pic/thumb-group-photo.jpg");
+	assert.strictEqual(linkAtt.image, "https://xcancel.com/pic/thumb-video.jpg");
 	assert.ok(linkAtt.url.includes("/status/2045499065136238610"), "link URL should point at the status");
 	// The raw "Video" anchor must be gone from the body
 	assert.ok(!/>\s*Video\s*</.test(retweet.body), "raw Video anchor leaked into body");
@@ -284,16 +284,16 @@ async function run() {
 	assert.ok(!retweet.body.includes("<img"), "body should not retain <img> when provides_attachments is on");
 
 	// Reply
-	assert.strictEqual(reply.author.username, "@sanchezcastejon");
-	assert.ok(reply.annotations && reply.annotations[0].text === "En respuesta a @otroUsuario");
+	assert.strictEqual(reply.author.username, "@sample_user");
+	assert.ok(reply.annotations && reply.annotations[0].text === "Replying to @replied_user");
 	// Two photos => two image attachments
 	const imgAtts = reply.attachments.filter(a => a instanceof MediaAttachment && a.mimeType === "image");
 	assert.strictEqual(imgAtts.length, 2, "reply should have 2 image attachments");
 	// Reply should also carry a LinkAttachment pointing at the conversation
-	const convo = reply.attachments.find(a => a instanceof LinkAttachment && a.title === "Ver la conversación");
+	const convo = reply.attachments.find(a => a instanceof LinkAttachment && a.title === "View conversation");
 	assert.ok(convo, "reply should include a conversation LinkAttachment");
 	assert.ok(convo.url && convo.url.includes("/status/"), "conversation URL should be the status link");
-	assert.strictEqual(convo.subtitle, "Respuesta a @otroUsuario");
+	assert.strictEqual(convo.subtitle, "Replying to @replied_user");
 
 	// GIF item
 	const gifAtt = gif.attachments.find(a => a instanceof MediaAttachment && (a.mimeType || "").startsWith("video"));
@@ -330,7 +330,7 @@ async function run() {
 		assert.strictEqual(got, c.expect,
 			"resolveFeedUrl(" + c.url + ", replies=" + c.replies + ") => " + got);
 	} // End of the loop over URL-shape cases
-	global.feedUrl = "https://xcancel.com/sanchezcastejon/with_replies/rss";
+	global.feedUrl = "https://xcancel.com/sample_user/with_replies/rss";
 	global.includeReplies = "on";
 
 	// Whitelist-gate detection
@@ -338,7 +338,7 @@ async function run() {
 	nextResponse = gateXml;
 	await verify();
 	assert.ok(captured.error, "whitelist gate should produce a verification error");
-	assert.ok(/whitelist|lista blanca/i.test(captured.error.message),
+	assert.ok(/whitelist/i.test(captured.error.message),
 		"error message should explain the whitelist step");
 	assert.ok(captured.error.message.indexOf("22344d98") >= 0,
 		"error message should include the whitelist ID");

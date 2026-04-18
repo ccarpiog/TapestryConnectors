@@ -26,7 +26,7 @@ const REQUEST_HEADERS = {
 
 /**
  * Builds the actual RSS URL to fetch from the user-supplied input and
- * the "Incluir respuestas" switch.
+ * the "Include replies" switch.
  *
  * - Rewrites twitter.com / x.com / mobile.twitter.com hosts to
  *   xcancel.com so users can paste a Twitter URL directly.
@@ -69,7 +69,7 @@ function verify() {
 			return xmlParse(text).then((doc) => {
 				const channel = extractChannel(doc);
 				if (!channel) {
-					processError(new Error("La URL no devuelve un RSS válido."));
+					processError(new Error("The URL does not return a valid RSS feed."));
 					return;
 				}
 				const whitelistError = detectWhitelistGate(channel);
@@ -116,7 +116,7 @@ function load() {
 			return xmlParse(text).then((doc) => {
 				const channel = extractChannel(doc);
 				if (!channel) {
-					processError(new Error("El RSS está vacío o no se reconoce el formato."));
+					processError(new Error("The RSS feed is empty or its format is not recognized."));
 					return;
 				}
 				const whitelistError = detectWhitelistGate(channel);
@@ -189,10 +189,10 @@ function detectWhitelistGate(channel) {
 		: "";
 	const idMatch = desc.match(/[0-9a-f]{64,}/i);
 	const id = idMatch ? idMatch[0] : "";
-	const msg = "XCancel exige que los lectores RSS estén en su lista blanca." +
-		" Envía un correo a rss@xcancel.com explicando por qué quieres leer" +
-		" sus feeds e incluye este ID:\n\n" + (id || "(no se pudo extraer el ID; revisa el feed en un navegador)") +
-		"\n\nUna vez aprobado, reintenta añadir el feed.";
+	const msg = "XCancel requires RSS readers to be whitelisted." +
+		" Send an email to rss@xcancel.com explaining why you want to read" +
+		" their feeds and include this ID:\n\n" + (id || "(ID could not be extracted; open the feed in a browser to find it)") +
+		"\n\nOnce approved, retry adding the feed.";
 	return new Error(msg);
 } // End of function detectWhitelistGate()
 
@@ -258,17 +258,17 @@ function buildItem(raw, channel) {
 
 	const annotations = [];
 	if (kind.type === "retweet") {
-		const ann = Annotation.createWithText("Retweet de @" + kind.handle);
+		const ann = Annotation.createWithText("Retweeted by @" + kind.handle);
 		ann.icon = "tapestry.boost.fill";
 		if (kind.handle) ann.uri = profileUrlFor(kind.handle, link);
 		annotations.push(ann);
 	} else if (kind.type === "reply") {
-		const ann = Annotation.createWithText("En respuesta a @" + kind.handle);
+		const ann = Annotation.createWithText("Replying to @" + kind.handle);
 		ann.icon = "arrowshape.turn.up.left.fill";
 		if (kind.handle) ann.uri = profileUrlFor(kind.handle, link);
 		annotations.push(ann);
 	} else if (kind.type === "pinned") {
-		const ann = Annotation.createWithText("Fijado");
+		const ann = Annotation.createWithText("Pinned");
 		ann.icon = "pin.fill";
 		annotations.push(ann);
 	}
@@ -284,8 +284,8 @@ function buildItem(raw, channel) {
 	// link card pointing at the full conversation view.
 	if (kind.type === "reply" && link) {
 		const convo = LinkAttachment.createWithUrl(link);
-		convo.title = "Ver la conversación";
-		convo.subtitle = "Respuesta a @" + kind.handle;
+		convo.title = "View conversation";
+		convo.subtitle = "Replying to @" + kind.handle;
 		convo.siteName = "XCancel";
 		extracted.attachments.push(convo);
 	}
@@ -381,8 +381,8 @@ function extractMediaAndCleanBody(html, itemLink) {
 		if (!/\bVideo\b/.test(inner) || !/<img\b/i.test(inner)) return match;
 		const thumbMatch = inner.match(/<img\b[^>]*src="([^"]+)"/i);
 		const link = LinkAttachment.createWithUrl(href || itemLink);
-		link.title = "Ver vídeo";
-		link.subtitle = "Contenido de vídeo en el tweet";
+		link.title = "Watch video";
+		link.subtitle = "Video attached to the tweet";
 		link.type = "video";
 		if (thumbMatch) link.image = thumbMatch[1];
 		attachments.push(link);

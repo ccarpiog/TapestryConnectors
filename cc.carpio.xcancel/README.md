@@ -22,10 +22,10 @@ This connector fixes all three:
 
 - `item.author` is built from `<dc:creator>` so retweets render under
   the original author. The retweeter is surfaced via an `Annotation`
-  (*"Retweet de @username"*).
+  (*"Retweeted by @username"*).
 - Video anchors become a `LinkAttachment` pointing at the status page,
-  with the thumbnail as its preview image and a clear
-  *"Ver vídeo"* label.
+  with the thumbnail as its preview image and a clear *"Watch video"*
+  label.
 - The `RT by @…:` / `R to @…:` / `Pinned:` prefixes are replaced with
   explicit annotations carrying appropriate SF Symbol icons. Tapestry
   uses the post body (not the RSS `<title>`) as the post text for
@@ -38,9 +38,9 @@ When adding the feed in Tapestry, provide:
 
 | Field | Description |
 |-------|-------------|
-| URL del feed RSS | Any XCancel or Nitter RSS URL, e.g. `https://xcancel.com/<user>/with_replies/rss`. |
-| Ocultar respuestas | Hide items prefixed `R to @…:`. |
-| Ocultar retweets | Hide items prefixed `RT by @…:`. |
+| RSS feed URL | Any XCancel, Twitter/X, or Nitter URL. Twitter/X hosts and status URLs are rewritten to the corresponding XCancel RSS endpoint. |
+| Include replies | When on, the connector hits `/with_replies/rss`; when off, `/rss`. |
+| Hide retweets | Hide items prefixed `RT by @…:`. |
 
 ### XCancel access gate
 

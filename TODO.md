@@ -1,18 +1,12 @@
 You want to continue reading some Twitter feeds, but you don't want to give money to Elon Musk.
 
-That's why you've been using XCancel's RSS feeds, such as this one:
+That's why you've been using XCancel's RSS feeds and adding them to Tapestry.
 
-https://xcancel.com/112canarias/with_replies/rss
+However, they don't look as good as they could. Embedded videos only show as a "Video" link in Tapestry.
 
+Also, retweets seem to be written by the person retweeting instead of the original author. You could think that the original author is the account retweeting, when it's just a retweet.
 
-And adding them to Tapestry.
-
-However, they don't look as good as they could. And embedded videos
-(such as the one here https://xcancel.com/112canarias/status/2045499065136238610#m) only show as a "Video" link in Tapestry.
-
-Also, retweets seem to be written by the person retweeting instead of the original author, such as the one in Screenshot1.png. You could think that it has been created by @garcabaines1975, when it's just a retweet from @sanchezcastejon.
-
-Yo want to create a new connector to process xcancel's feeds (or nitter, I understand they are the same) and show the data withou these issues.
+You want to create a new connector to process xcancel's feeds (or nitter, I understand they are the same) and show the data without these issues.
 
 ---
 
@@ -26,19 +20,18 @@ Tapestry's "Install a Plugin" flow on iOS.
 - **Retweets are attributed to the original author.** The
   `<dc:creator>` in the RSS already carries the original poster's
   handle; the connector uses that for `item.author` and adds an
-  `Annotation` (*"Retweet de @username"*) with a boost icon so the
+  `Annotation` (*"Retweeted by @username"*) with a boost icon so the
   retweeter remains visible but does not overshadow the author.
 - **Embedded videos become a preview card.** The Nitter `<a
   href="/status/…">Video<img src="thumb"/></a>` pattern is converted
-  into a `LinkAttachment` (title *"Ver vídeo"*, subtitle *"Contenido
-  de vídeo en el tweet"*, thumbnail preserved) that points back to
-  the status page on XCancel. GIFs are extracted as proper
-  `video/mp4` `MediaAttachment`s.
+  into a `LinkAttachment` (title *"Watch video"*, thumbnail
+  preserved) that points back to the status page on XCancel. GIFs
+  are extracted as proper `video/mp4` `MediaAttachment`s.
 - **Reply and pinned markers become annotations.** `R to @user:` and
   `Pinned:` title prefixes are replaced with SF-Symbol annotations.
-  UI switches let the user hide replies or retweets entirely.
+  A UI switch lets the user hide retweets entirely.
 - **Browser User-Agent.** XCancel rejects curl-like clients with HTTP
-  403; every request now carries a desktop Safari UA.
+  403; every request now carries a feed-reader UA.
 
 ### Package contents
 - [cc.carpio.xcancel/plugin-config.json](cc.carpio.xcancel/plugin-config.json)

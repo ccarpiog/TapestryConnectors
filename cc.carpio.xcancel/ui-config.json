@@ -3,19 +3,19 @@
 		{
 			"name": "feedUrl",
 			"type": "text",
-			"prompt": "URL del feed RSS",
-			"placeholder": "https://xcancel.com/username o https://x.com/username"
+			"prompt": "RSS feed URL",
+			"placeholder": "https://xcancel.com/username or https://x.com/username"
 		},
 		{
 			"name": "includeReplies",
 			"type": "switch",
-			"prompt": "Incluir respuestas",
+			"prompt": "Include replies",
 			"value": "off"
 		},
 		{
 			"name": "hideRetweets",
 			"type": "switch",
-			"prompt": "Ocultar retweets",
+			"prompt": "Hide retweets",
 			"value": "off"
 		}
 	]
